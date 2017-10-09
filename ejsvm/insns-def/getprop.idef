@@ -1,0 +1,24 @@
+\inst getprop (Register dst, Value obj)
+
+\prologue \{
+#define prop v2     /* TODO: add Value v2 to parameters */
+\}
+
+\epilogue \{
+#undef prop
+\}
+
+\when obj:array \{
+  dst = get_array_prop(context, obj, prop);
+\}
+
+\when (obj:regexp || obj:number_object || obj:boolean_object || obj:string_object || obj:builtin || obj:simple_object || obj:iterator || obj:function) \{
+  dst = get_object_prop(context, obj, prop);
+\}
+
+\otherwise \{
+  if (obj == JS_UNDEFINED) printf("GETPROP: !!!!\n");
+  obj = to_object(context, obj);
+  goto getprop_HEAD;
+\}
+
